@@ -63,7 +63,7 @@ class _ListPageState extends State<ListPage> {
         child: Column(
           children: [
             // Search bar container
-            Padding(
+          Padding  (
               padding:  EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 10),
               child: Container(
                 width: double.infinity,

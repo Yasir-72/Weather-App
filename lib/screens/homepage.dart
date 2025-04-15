@@ -29,7 +29,8 @@ class _HomePageState extends State<HomePage> {
     // Request location permission
     LocationPermission permission = await Geolocator.requestPermission();
 
-    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
       // Fetch current location
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
@@ -79,18 +80,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _fetchWeatherDataFromLocation(double latitude, double longitude) async {
+  Future<void> _fetchWeatherDataFromLocation(
+      double latitude, double longitude) async {
     setState(() {
       isLoading = true;
     });
 
     try {
       final weatherService = WeatherServices();
-      final data = await weatherService.fetchWeatherByCoordinates(latitude, longitude);
+      final data =
+          await weatherService.fetchWeatherByCoordinates(latitude, longitude);
       setState(() {
         weatherInfo = data;
         isLoading = false;
-        isSearchMode = false; // Revert to normal AppBar after fetching location data
+        isSearchMode =
+            false; // Revert to normal AppBar after fetching location data
       });
     } catch (e) {
       setState(() {
@@ -130,7 +134,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFF06040F),
         title: Row(
           children: [
-            if (!isSearchMode) 
+            if (!isSearchMode)
               IconButton(
                 onPressed: () {
                   showModalBottomSheet<void>(
@@ -146,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white,
                 ),
               ),
-            if (isSearchMode) 
+            if (isSearchMode)
               IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
@@ -189,7 +193,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          if (!isSearchMode) 
+          if (!isSearchMode)
             IconButton(
               icon: Icon(
                 Icons.search,
@@ -231,73 +235,51 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Padding(
-                      //   padding: const EdgeInsets.only(
-                      //     top: 10,
-                      //     left: 20,
-                      //     right: 20,
-                      //   ),
-                      //   child: Container(
-                      //     width: double.infinity,
-                      //     padding: const EdgeInsets.symmetric(
-                      //       horizontal: 20,
-                      //       vertical: 10,
-                      //     ),
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.white.withOpacity(0.1),
-                      //       borderRadius: BorderRadius.circular(25),
-                      //     ),
-                      //     child: TextField(
-                      //       controller: _searchController,
-                      //       style: const TextStyle(color: Colors.white),
-                      //       decoration: InputDecoration(
-                      //         hintText: "Enter Location",
-                      //         hintStyle: const TextStyle(color: Colors.white70),
-                      //         border: InputBorder.none,
-                      //         suffixIcon: IconButton(
-                      //           icon: const Icon(Icons.search,
-                      //               color: Colors.white, size: 28),
-                      //           onPressed: () {
-                      //             final cityName =
-                      //                 _searchController.text.trim();
-                      //             if (cityName.isNotEmpty) {
-                      //               _fetchWeatherData(cityName);
-                      //             }
-                      //           },
-                      //         ),
-                      //       ),
-                      //       onSubmitted: (value) {
-                      //         if (value.isNotEmpty) {
-                      //           _fetchWeatherData(value.trim());
-                      //         }
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
                       Image.asset(
                         "images/mixcloud.png",
                         height: 200,
                       ),
-                      Text(
-                        weatherInfo != null
-                            ? '${(weatherInfo!.temperature).toStringAsFixed(0)}\u00B0C'
-                            : 'N/A',
-                        style: TextStyle(
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        weatherInfo != null
-                            ? '${weatherInfo!.cityName}, ${weatherInfo!.country}'
-                            : 'N/A',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white70,
-                        ),
-                      ),
+                      weatherInfo != null
+                          ? Column(
+                              children: [
+                                Text(
+                                  '${(weatherInfo!.temperature).toStringAsFixed(0)}\u00B0C',
+                                  style: TextStyle(
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${weatherInfo!.cityName}, ${weatherInfo!.country}',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 5,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Loading...',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
                       SizedBox(height: 5),
                       Center(
                         child: SizedBox(
@@ -306,32 +288,36 @@ class _HomePageState extends State<HomePage> {
                             itemCount: 1,
                             itemBuilder: (context, index) {
                               return Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      weatherInfo != null
-                                          ? "Min: ${weatherInfo!.forecast[0].minTemp}\u00B0C"
-                                          : "N/A",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white70,
+                                child: weatherInfo != null
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Min: ${weatherInfo!.forecast[0].minTemp}\u00B0C",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "Max: ${weatherInfo!.forecast[0].maxTemp}\u00B0C",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        height: 30,
+                                        width: 30,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: Colors.white70,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      weatherInfo != null
-                                          ? "Max: ${weatherInfo!.forecast[0].maxTemp}\u00B0C"
-                                          : "N/A",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white70,
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               );
                             },
                           ),
@@ -396,15 +382,24 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Icon(Icons.location_pin,
                               color: Colors.white, size: 24),
-                          Text(
-                            weatherInfo != null
-                                ? "${weatherInfo!.cityName}"
-                                : 'N/A',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          Center(
+                            child: weatherInfo != null
+                                ? Text(
+                                    "${weatherInfo!.cityName}",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: 30,
+                                    width: 30,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
@@ -476,16 +471,48 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildWeatherCard(
-                              "Condition",
-                              weatherInfo != null
-                                  ? '${(weatherInfo!.forecast[0].condition)}'
-                                  : 'N/A',
-                              Icons.sunny_snowing),
+                            "Condition",
+                            weatherInfo != null
+                                ? Text(
+                                    '${weatherInfo!.forecast[0].condition}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    ),
+                                  ),
+                            Icons.sunny_snowing,
+                          ),
                           _buildWeatherCard(
                               "Wind",
                               weatherInfo != null
-                                  ? '${(weatherInfo!.windSpeed).toStringAsFixed(2)}\ Km\h'
-                                  : 'N/A',
+                                  ? Text(
+                                      '${(weatherInfo!.windSpeed).toStringAsFixed(2)}\ Km\h,',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
                               Icons.air),
                         ],
                       ),
@@ -496,14 +523,44 @@ class _HomePageState extends State<HomePage> {
                           _buildWeatherCard(
                               "Humidity",
                               weatherInfo != null
-                                  ? '${(weatherInfo!.humidity).toStringAsFixed(0)}\ %'
-                                  : 'N/A',
+                                  ? Text(
+                                      '${(weatherInfo!.humidity).toStringAsFixed(0)}\ %',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
+                                  : SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
                               Icons.water_drop),
                           _buildWeatherCard(
                               "Pressure",
                               weatherInfo != null
-                                  ? '${(weatherInfo!.pressure.toStringAsFixed(0))}'
-                                  : 'N/A',
+                                  ? Text(
+                                      '${(weatherInfo!.pressure.toStringAsFixed(0))}',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
+                                  : SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
                               Icons.speed),
                         ],
                       ),
@@ -514,14 +571,34 @@ class _HomePageState extends State<HomePage> {
                           _buildWeatherCard(
                               "UV",
                               weatherInfo != null
-                                  ? '${(weatherInfo!.UV.toStringAsFixed(2))}'
-                                  : 'N/A',
+                                  ? Text(
+                                      '${(weatherInfo!.UV.toStringAsFixed(2))}')
+                                  : SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
                               Icons.sunny_snowing),
                           _buildWeatherCard(
                               "Real Feel",
                               weatherInfo != null
-                                  ? '${(weatherInfo!.realfeel).toStringAsFixed(2)}\u00B0C'
-                                  : 'N/A',
+                                  ? Text(
+                                      '${(weatherInfo!.realfeel).toStringAsFixed(2)}\u00B0C')
+                                  : SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
                               Icons.line_weight),
                         ],
                       ),
@@ -536,7 +613,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildWeatherCard(String title, String value, IconData icon) {
+  Widget _buildWeatherCard(String title, Widget valueWidget, IconData icon) {
     return Card(
       elevation: 5,
       color: Colors.white.withOpacity(0.4),
@@ -552,14 +629,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Icon(icon, size: 30, color: Colors.white),
             SizedBox(height: 5),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            valueWidget,
             SizedBox(height: 5),
             Text(
               title,
