@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/modal/weathermodal.dart';
 import 'package:weather_app/res/response.dart';
 import 'package:weather_app/screens/infopage.dart';
-// import 'package:geolocator/geolocator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,32 +22,31 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // _getCurrentLocation(); // Fetch current location when the app starts
-    _fetchWeatherData("Mumbai");
+    _getCurrentLocation(); // Fetch current location when the app starts
   }
 
-  // Future<void> _getCurrentLocation() async {
-  //   // Request location permission
-  //   LocationPermission permission = await Geolocator.requestPermission();
+  Future<void> _getCurrentLocation() async {
+    // Request location permission
+    LocationPermission permission = await Geolocator.requestPermission();
 
-  //   if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
-  //     // Fetch current location
-  //     Position position = await Geolocator.getCurrentPosition(
-  //         desiredAccuracy: LocationAccuracy.high);
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      // Fetch current location
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
 
-  //     // Fetch weather data based on the current location
-  //     _fetchWeatherDataFromLocation(position.latitude, position.longitude);
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text("Location permission denied. Please enable location."),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //     // You can set a default location like "Mumbai" if location permission is denied
-  //     _fetchWeatherData("Mumbai");
-  //   }
-  // }
+      // Fetch weather data based on the current location
+      _fetchWeatherDataFromLocation(position.latitude, position.longitude);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Location permission denied. Please enable location."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      // You can set a default location like "Mumbai" if location permission is denied
+      _fetchWeatherData("Mumbai");
+    }
+  }
 
   Future<void> _fetchWeatherData(String cityName) async {
     setState(() {
@@ -80,36 +79,36 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Future<void> _fetchWeatherDataFromLocation(double latitude, double longitude) async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
+  Future<void> _fetchWeatherDataFromLocation(double latitude, double longitude) async {
+    setState(() {
+      isLoading = true;
+    });
 
-  //   try {
-  //     final weatherService = WeatherServices();
-  //     final data = await weatherService.fetchWeatherByCoordinates(latitude, longitude);
-  //     setState(() {
-  //       weatherInfo = data;
-  //       isLoading = false;
-  //       isSearchMode = false; // Revert to normal AppBar after fetching location data
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       isLoading = false;
-  //       weatherInfo = null;
-  //       isSearchMode = false;
-  //     });
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text(
-  //           "Error fetching weather data. Please try again.",
-  //           style: TextStyle(color: Colors.white),
-  //         ),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
+    try {
+      final weatherService = WeatherServices();
+      final data = await weatherService.fetchWeatherByCoordinates(latitude, longitude);
+      setState(() {
+        weatherInfo = data;
+        isLoading = false;
+        isSearchMode = false; // Revert to normal AppBar after fetching location data
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        weatherInfo = null;
+        isSearchMode = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error fetching weather data. Please try again.",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   String _getDayName(String dateString) {
     final date = DateTime.parse(dateString);
