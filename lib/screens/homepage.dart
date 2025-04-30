@@ -572,7 +572,12 @@ class _HomePageState extends State<HomePage> {
                               "UV",
                               weatherInfo != null
                                   ? Text(
-                                      '${(weatherInfo!.UV.toStringAsFixed(2))}')
+                                      '${(weatherInfo!.UV.toStringAsFixed(2))}',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
                                   : SizedBox(
                                       height: 20,
                                       width: 20,
@@ -588,7 +593,12 @@ class _HomePageState extends State<HomePage> {
                               "Real Feel",
                               weatherInfo != null
                                   ? Text(
-                                      '${(weatherInfo!.realfeel).toStringAsFixed(2)}\u00B0C')
+                                      '${(weatherInfo!.realfeel).toStringAsFixed(2)}\u00B0C',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
                                   : SizedBox(
                                       height: 20,
                                       width: 20,
